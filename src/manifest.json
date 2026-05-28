@@ -1,0 +1,8 @@
+{
+  "name": "uniapp_Mudular",
+  "appid": "__UNI__uniappMudular",
+  "description": "基于 uni-app 框架的多端开发项目",
+  "versionName": "1.0.0",
+  "versionCode": "100",
+  "transformPx": false
+}
