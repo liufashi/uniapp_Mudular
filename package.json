@@ -13,12 +13,12 @@
   "author": "liufashi",
   "license": "MIT",
   "dependencies": {
-    "vue": "^3.4.0"
+    "vue": "3.4.21"
   },
   "devDependencies": {
-    "@dcloudio/uni-app": "3.0.0-alpha-5010120260525001",
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-5010120260525001",
-    "@dcloudio/vite-plugin-uni": "3.0.0-alpha-5010120260525001",
+    "@dcloudio/uni-app": "3.0.0-4080720251210001",
+    "@dcloudio/uni-cli-shared": "3.0.0-4080720251210001",
+    "@dcloudio/vite-plugin-uni": "3.0.0-4080720251210001",
     "vite": "^5.2.8"
   }
 }
