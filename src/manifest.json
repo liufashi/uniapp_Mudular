@@ -4,5 +4,71 @@
   "description": "基于 uni-app 框架的多端开发项目",
   "versionName": "1.0.0",
   "versionCode": "100",
-  "transformPx": false
+  "transformPx": false,
+
+  "app-plus": {
+    "usingComponents": true,
+    "nvueStyleCompiler": "uni-app",
+    "compilerVersion": 4,
+    "splashscreen": {
+      "alwaysShowBeforeRender": true,
+      "waitingAutoDisplay": true,
+      "autoclose": true,
+      "delay": 0
+    },
+    "modules": {},
+    "distribute": {
+      "android": {
+        "permissions": [
+          "<uses-permission android:name='android.permission.INTERNET'/>"
+        ],
+        "minSdkVersion": 21,
+        "targetSdkVersion": 33
+      },
+      "ios": {
+        "idfa": false,
+        "dSYMs": false
+      },
+      "sdkConfigs": {}
+    }
+  },
+
+  "h5": {
+    "devServer": {
+      "port": 8080,
+      "disableHostCheck": true,
+      "proxy": null
+    },
+    "router": {
+      "mode": "hash",
+      "base": "./"
+    },
+    "title": "uniapp_Mudular",
+    "sdkConfigs": {
+      "maps": {}
+    }
+  },
+
+  "mp-weixin": {
+    "appid": "",
+    "setting": {
+      "urlCheck": false,
+      "es6": true,
+      "postcss": true,
+      "minified": true
+    },
+    "usingComponents": true
+  },
+
+  "mp-alipay": {
+    "usingComponents": true
+  },
+
+  "mp-baidu": {
+    "usingComponents": true
+  },
+
+  "uniStatistics": {
+    "enable": false
+  }
 }

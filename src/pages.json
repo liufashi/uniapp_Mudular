@@ -5,6 +5,12 @@
       "style": {
         "navigationBarTitleText": "首页"
       }
+    },
+    {
+      "path": "pages/demo/demo",
+      "style": {
+        "navigationBarTitleText": "演示页"
+      }
     }
   ],
   "globalStyle": {

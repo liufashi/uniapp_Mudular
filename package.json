@@ -7,7 +7,13 @@
     "dev:mp-weixin": "uni -p mp-weixin",
     "build:mp-weixin": "uni build -p mp-weixin",
     "dev:h5": "uni -p h5",
-    "build:h5": "uni build -p h5"
+    "build:h5": "uni build -p h5",
+    "dev:app": "uni -p app",
+    "build:app": "uni build -p app",
+    "dev:app-android": "uni -p app-android",
+    "build:app-android": "uni build -p app-android",
+    "dev:app-ios": "uni -p app-ios",
+    "build:app-ios": "uni build -p app-ios"
   },
   "keywords": ["uni-app", "vue", "miniprogram"],
   "author": "liufashi",

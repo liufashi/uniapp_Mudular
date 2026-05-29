@@ -1,9 +1,9 @@
 <template>
   <view class="container">
-    <Header title="首页" />
+    <Header title="演示页" />
     <view class="content">
-      <text class="title">Hello uniapp</text>
-      <text class="subtitle">欢迎使用 uniapp 多端开发框架</text>
+      <text class="title">Hello uniapp 多端开发</text>
+      <text class="desc">支持 iOS / Android / 微信小程序 / H5</text>
 
       <view class="platform-tags">
         <!-- #ifdef APP-PLUS -->
@@ -17,7 +17,7 @@
         <!-- #endif -->
       </view>
 
-      <button @tap="goToDemo" class="btn">跳转演示页</button>
+      <button @tap="goBack" class="btn">返回首页</button>
     </view>
   </view>
 </template>
@@ -31,16 +31,14 @@ export default {
     return {}
   },
   onLoad() {
-    console.log('Index onLoad')
+    console.log('Demo onLoad')
   },
   onShow() {
-    console.log('Index onShow')
+    console.log('Demo onShow')
   },
   methods: {
-    goToDemo() {
-      uni.navigateTo({
-        url: '/pages/demo/demo'
-      })
+    goBack() {
+      uni.navigateBack()
     }
   }
 }
@@ -52,18 +50,18 @@ export default {
   background: #f8f8f8;
 }
 .content {
+  padding: 40rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 100rpx;
 }
 .title {
-  font-size: 48rpx;
+  font-size: 40rpx;
   font-weight: bold;
   color: #333;
-  margin-bottom: 30rpx;
+  margin-bottom: 20rpx;
 }
-.subtitle {
+.desc {
   font-size: 28rpx;
   color: #666;
   margin-bottom: 60rpx;
