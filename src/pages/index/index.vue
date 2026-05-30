@@ -1,12 +1,15 @@
 <template>
-  <view class="container">
+  <view class="page">
     <view class="hero">
       <text class="title">首页列表</text>
-      <text class="subtitle">首个业务模块：内容列表（Mock 数据）</text>
+      <text class="subtitle">下拉刷新 · 上拉或点击加载更多</text>
+      <!-- #ifdef H5 -->
+      <text class="action-link" @tap="handleRefresh">点击刷新</text>
+      <!-- #endif -->
     </view>
 
-    <view v-if="loading" class="state">加载中...</view>
-    <view v-else-if="error" class="state error" @tap="fetchList">
+    <view v-if="loading && !list.length" class="state">加载中...</view>
+    <view v-else-if="error && !list.length" class="state error" @tap="reload">
       {{ error }}，点击重试
     </view>
     <view v-else class="list">
@@ -14,6 +17,14 @@
         <text class="card-title">{{ item.title }}</text>
         <text class="card-desc">{{ item.desc }}</text>
       </view>
+
+      <view class="footer" @tap="loadMore">
+        <text v-if="loadingMore" class="footer-text">加载中...</text>
+        <text v-else-if="finished" class="footer-text">没有更多了</text>
+        <text v-else class="footer-text footer-link">上拉或点击加载更多</text>
+      </view>
+
+      <view v-if="!finished" class="load-sentinel" />
     </view>
   </view>
 </template>
@@ -21,49 +32,141 @@
 <script>
 import { getHomeList } from '../../api/user'
 
+const PAGE_SIZE = 5
+
 export default {
   data() {
     return {
+      list: [],
+      page: 1,
       loading: false,
-      error: '',
-      list: []
+      loadingMore: false,
+      finished: false,
+      error: ''
     }
   },
   onLoad() {
-    this.fetchList()
+    this.reload()
+  },
+  onReady() {
+    this.setupLoadObserver()
+  },
+  onUnload() {
+    this.teardownLoadObserver()
   },
   onPullDownRefresh() {
-    this.fetchList().finally(() => {
-      uni.stopPullDownRefresh()
-    })
+    this.handleRefresh()
+  },
+  onReachBottom() {
+    this.loadMore()
   },
   methods: {
-    async fetchList() {
-      this.loading = true
+    async reload() {
+      this.page = 1
+      this.finished = false
       this.error = ''
+      await this.fetchList({ reset: true })
+    },
+    async handleRefresh() {
+      if (this.loading || this.loadingMore) return
       try {
-        const data = await getHomeList()
-        this.list = data.list || []
+        await this.reload()
+        uni.showToast({ title: '已刷新', icon: 'none', duration: 1200 })
+      } finally {
+        uni.stopPullDownRefresh()
+      }
+    },
+    async loadMore() {
+      if (this.loading || this.loadingMore || this.finished) return
+      this.page += 1
+      await this.fetchList({ reset: false })
+    },
+    async fetchList({ reset }) {
+      if (reset) {
+        this.loading = true
+      } else {
+        this.loadingMore = true
+      }
+
+      try {
+        const data = await getHomeList({
+          page: this.page,
+          pageSize: PAGE_SIZE
+        })
+        const nextList = data.list || []
+        this.list = reset ? nextList : this.list.concat(nextList)
+        this.finished = data.hasMore === false || nextList.length === 0
+        if (reset) {
+          this.error = ''
+        }
+        await this.$nextTick()
+        this.tryFillScreen()
+        this.setupLoadObserver()
       } catch (error) {
-        this.error = error.message || '加载失败'
+        if (!reset) {
+          this.page -= 1
+        }
+        const message = error.message || '加载失败'
+        if (reset) {
+          this.error = message
+        } else {
+          uni.showToast({ title: message, icon: 'none' })
+        }
       } finally {
         this.loading = false
+        this.loadingMore = false
       }
+    },
+    setupLoadObserver() {
+      if (this.finished || this.loading || this.loadingMore) return
+
+      this.teardownLoadObserver()
+      this._loadObserver = uni.createIntersectionObserver(this, {
+        observeAll: false
+      })
+      this._loadObserver
+        .relativeToViewport({ bottom: 80 })
+        .observe('.load-sentinel', (res) => {
+          if (res.intersectionRatio > 0) {
+            this.loadMore()
+          }
+        })
+    },
+    teardownLoadObserver() {
+      if (this._loadObserver) {
+        this._loadObserver.disconnect()
+        this._loadObserver = null
+      }
+    },
+    tryFillScreen() {
+      if (this.finished || this.loading || this.loadingMore) return
+
+      const query = uni.createSelectorQuery().in(this)
+      query.select('.page').boundingClientRect()
+      query.exec((res) => {
+        const pageRect = res[0]
+        if (!pageRect) return
+        const { windowHeight } = uni.getSystemInfoSync()
+        if (pageRect.height <= windowHeight + 20) {
+          this.loadMore()
+        }
+      })
     }
   }
 }
 </script>
 
 <style scoped>
-.container {
+.page {
   min-height: 100vh;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
   background: #f8f8f8;
-  padding: 24rpx;
   box-sizing: border-box;
 }
 
 .hero {
-  margin-bottom: 24rpx;
+  padding: 24rpx 24rpx 16rpx;
+  box-sizing: border-box;
 }
 
 .title {
@@ -78,6 +181,13 @@ export default {
   display: block;
   font-size: 24rpx;
   color: #999;
+}
+
+.action-link {
+  display: inline-block;
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: #007aff;
 }
 
 .state {
@@ -95,6 +205,8 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20rpx;
+  padding: 0 24rpx;
+  box-sizing: border-box;
 }
 
 .card {
@@ -116,5 +228,23 @@ export default {
   font-size: 26rpx;
   color: #666;
   line-height: 1.6;
+}
+
+.footer {
+  padding: 32rpx 0 16rpx;
+  text-align: center;
+}
+
+.footer-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.footer-link {
+  color: #007aff;
+}
+
+.load-sentinel {
+  height: 2px;
 }
 </style>

@@ -1,6 +1,9 @@
 import request from './request'
 import { useMock } from '../utils/env'
 
+const PAGE_SIZE = 5
+const MOCK_TOTAL = 15
+
 const MOCK_HOME_LIST = [
   { id: 1, title: '欢迎使用 uniapp_Mudular', desc: '多端项目骨架已就绪，可在此基础上扩展业务。' },
   { id: 2, title: '网络请求层', desc: 'src/api/request.js 已封装 uni.request，支持 Token 与统一错误处理。' },
@@ -11,6 +14,28 @@ function mockDelay(data, ms = 300) {
   return new Promise((resolve) => {
     setTimeout(() => resolve(data), ms)
   })
+}
+
+function buildMockList(page, pageSize) {
+  const start = (page - 1) * pageSize
+  const count = Math.min(pageSize, Math.max(MOCK_TOTAL - start, 0))
+  const list = Array.from({ length: count }, (_, index) => {
+    const id = start + index + 1
+    const preset = MOCK_HOME_LIST[id - 1]
+    if (preset) return { ...preset }
+    return {
+      id,
+      title: `列表条目 ${id}`,
+      desc: `这是第 ${id} 条 Mock 数据，用于演示上拉加载更多。`
+    }
+  })
+  return {
+    list,
+    total: MOCK_TOTAL,
+    page,
+    pageSize,
+    hasMore: start + list.length < MOCK_TOTAL
+  }
 }
 
 export function login(data) {
@@ -34,17 +59,17 @@ export function login(data) {
 }
 
 export function getHomeList(params = {}) {
+  const page = Number(params.page) || 1
+  const pageSize = Number(params.pageSize) || PAGE_SIZE
+
   if (useMock()) {
-    return mockDelay({
-      list: MOCK_HOME_LIST,
-      total: MOCK_HOME_LIST.length
-    })
+    return mockDelay(buildMockList(page, pageSize))
   }
 
   return request({
     url: '/home/list',
     method: 'GET',
-    data: params
+    data: { page, pageSize, ...params }
   })
 }
 
