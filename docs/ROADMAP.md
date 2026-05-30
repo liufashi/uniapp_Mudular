@@ -85,18 +85,21 @@ VITE_MOCK_HOME=false
 |---|---|---|
 | 设计变量 | ✅ | `src/styles/variables.scss`（主色、间距、圆角） |
 | 空态 / 错误态组件 | ✅ | `EmptyState.vue`、`ErrorState.vue` |
-| 安全区适配 | ⬜ | 底部 tabBar + iPhone 刘海，统一 `safe-area-inset` 工具类 |
+| 安全区适配 | ✅ | `src/styles/safe-area.scss`（`.page-tab` / `.page-safe` 等） |
 | UI 组件库 | 🔶 | [uni-ui](https://uniapp.dcloud.net.cn/component/uniui/uni-ui.html) 或 uView Plus，表单/弹窗/加载更快 |
 | 骨架屏 | ⬜ | 首页首屏 loading 换成 skeleton，体验更稳 |
 
-**安全区工具类示例（待加）：**
+**安全区工具类（已实现，见 `src/styles/safe-area.scss`）：**
 
-```scss
-// src/styles/safe-area.scss
-.safe-bottom {
-  padding-bottom: calc(#{$spacing-sm} + env(safe-area-inset-bottom));
-}
-```
+| 类名 | 用途 |
+|---|---|
+| `.safe-top` | 顶部刘海 / 状态栏 |
+| `.safe-bottom` | 底部 Home Indicator |
+| `.safe-x` | 左右安全区 |
+| `.safe-bottom-tab` | 底部 tabBar + 安全区（H5 自动加 tabBar 高度） |
+| `.page-tab` | tabBar 页面根容器 |
+| `.page-safe` | 普通页面根容器 |
+| `.safe-fixed-bottom` | 吸底操作区 |
 
 ---
 
@@ -140,7 +143,7 @@ npm run build:mp-weixin
 |---|---|---|
 | **v1.3.0** | 工程化 | ESLint/Prettier、~~环境分档~~、Git hooks、CI |
 | **v1.4.0** | ~~请求层~~ | loading、上传、错误码、Mock 细化、拦截器 |
-| **v1.5.0** | 体验 | 安全区、骨架屏、（可选）uni-ui |
+| **v1.5.0** | 体验 | ~~安全区~~、骨架屏、（可选）uni-ui |
 | **v2.0.0** | 平台专项 | 小程序隐私/分享、App 启动更新、分包 |
 
 以上版本号为建议，实际按业务优先级调整。

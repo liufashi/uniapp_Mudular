@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container page-tab">
     <view class="profile-card">
       <view class="avatar">{{ avatarText }}</view>
       <view class="info">
@@ -50,20 +50,20 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/styles/variables.scss';
+
 .container {
-  min-height: 100vh;
-  padding: 40rpx;
-  background: #f8f8f8;
+  padding: $spacing-lg;
   box-sizing: border-box;
 }
 
 .profile-card {
   display: flex;
   align-items: center;
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 40rpx;
+  background: $card-bg;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
   margin-bottom: 24rpx;
 }
 
@@ -71,7 +71,7 @@ export default {
   width: 112rpx;
   height: 112rpx;
   border-radius: 56rpx;
-  background: #007aff;
+  background: $primary-color;
   color: #fff;
   font-size: 40rpx;
   font-weight: bold;
@@ -89,26 +89,26 @@ export default {
   display: block;
   font-size: 36rpx;
   font-weight: bold;
-  color: #333;
+  color: $text-color;
   margin-bottom: 8rpx;
 }
 
 .desc {
   display: block;
-  font-size: 24rpx;
-  color: #999;
+  font-size: $font-size-sm;
+  color: $text-color-lighter;
 }
 
 .action-card {
-  background: #fff;
-  border-radius: 24rpx;
+  background: $card-bg;
+  border-radius: $border-radius-lg;
   padding: 32rpx;
 }
 
 .btn {
   height: 88rpx;
   line-height: 88rpx;
-  border-radius: 44rpx;
+  border-radius: $border-radius-full;
   font-size: 30rpx;
   margin-bottom: 20rpx;
 }
@@ -118,17 +118,17 @@ export default {
 }
 
 .btn.primary {
-  background: #007aff;
+  background: $primary-color;
   color: #fff;
 }
 
 .btn.danger {
-  background: #ff3b30;
+  background: $error-color;
   color: #fff;
 }
 
 .btn.ghost {
   background: #f5f5f5;
-  color: #333;
+  color: $text-color;
 }
 </style>

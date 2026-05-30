@@ -12,6 +12,7 @@
 - 请求层增强：`interceptors.js`、`upload.js`、`errorCode.js`
 - 请求 `showLoading` / `dedupe` / `abortRequest` 支持
 - 按模块 Mock：`useMockModule('user'|'home')` + `VITE_MOCK_*`
+- 安全区工具类 `src/styles/safe-area.scss`（`.page-tab` / `.page-safe`）
 
 ### 文档
 - 新增 [ROADMAP.md](./ROADMAP.md)，整理 v1.2.0 后续改造方向（工程化、请求层、UI、多端专项、可选进阶）

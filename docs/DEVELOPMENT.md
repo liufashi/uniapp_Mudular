@@ -32,6 +32,7 @@
 | tabBar | `pages.json` | 首页 / 我的 |
 | 公共组件 | `src/components/` | EmptyState、ErrorState、Header |
 | 设计变量 | `src/styles/variables.scss` | 颜色 / 间距 / 圆角 |
+| 安全区 | `src/styles/safe-area.scss` | `.page-tab` / `.page-safe` 等工具类 |
 
 环境变量：按 Vite 规则分档加载（详见 `.env.example`）
 

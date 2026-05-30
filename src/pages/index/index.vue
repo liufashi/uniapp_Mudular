@@ -1,5 +1,5 @@
 <template>
-  <view class="page">
+  <view class="page page-tab">
     <view class="hero">
       <text class="title">首页列表</text>
       <text class="subtitle">下拉刷新 · 上拉或点击加载更多</text>
@@ -71,9 +71,6 @@ export default {
 @import '@/styles/variables.scss';
 
 .page {
-  min-height: 100vh;
-  padding-bottom: calc(#{$spacing-sm} + env(safe-area-inset-bottom));
-  background: $bg-color;
   box-sizing: border-box;
 }
 

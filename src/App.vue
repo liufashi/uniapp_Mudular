@@ -13,6 +13,7 @@ export default {
 
 <style lang="scss">
 @import '@/styles/variables.scss';
+@import '@/styles/safe-area.scss';
 
 page {
   background-color: $bg-color;

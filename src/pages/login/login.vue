@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container page-safe">
     <view class="form-card">
       <text class="title">登录</text>
       <text class="subtitle">Mock 模式下可直接登录体验流程</text>
@@ -99,9 +99,7 @@ export default {
 @import '@/styles/variables.scss';
 
 .container {
-  min-height: 100vh;
   padding: 80rpx $spacing-lg;
-  background: $bg-color;
   box-sizing: border-box;
 }
 

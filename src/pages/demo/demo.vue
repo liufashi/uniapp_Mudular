@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container page-safe">
     <Header title="演示页" />
     <view class="content">
       <text class="title">Hello uniapp 多端开发</text>
@@ -45,10 +45,11 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/styles/variables.scss';
+
 .container {
-  min-height: 100vh;
-  background: #f8f8f8;
+  box-sizing: border-box;
 }
 .content {
   padding: 40rpx;
