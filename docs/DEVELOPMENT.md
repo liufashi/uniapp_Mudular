@@ -10,6 +10,7 @@
 |---|---|
 | [INIT.md](./INIT.md) | 环境初始化、目录规范、编码约定 |
 | **DEVELOPMENT.md**（本文） | 需求开发 → 测试 → 发布 的完整流程 |
+| [ROADMAP.md](./ROADMAP.md) | **后续改造方向**（工程化、请求层、UI、多端专项） |
 | [CHANGELOG.md](./CHANGELOG.md) | 版本变更记录 |
 
 ### 当前已实现（v1.2.0）
@@ -29,11 +30,24 @@
 | 公共组件 | `src/components/` | EmptyState、ErrorState、Header |
 | 设计变量 | `src/styles/variables.scss` | 颜色 / 间距 / 圆角 |
 
-环境变量：复制 `.env.example` → `.env.local`
-- `VITE_USE_MOCK=true` — Mock 模式
+环境变量：按 Vite 规则分档加载（详见 `.env.example`）
+
+| 文件 | 用途 | 何时加载 |
+|---|---|---|
+| `.env.development` | 本地开发 API、Mock 开关 | `npm run dev:*` |
+| `.env.staging` | 预发布 / 测试 API | `npm run build:*:staging` |
+| `.env.production` | 生产 API | `npm run build:*` |
+| `.env.local` | 个人本地覆盖（不提交） | 始终（优先级最高） |
+
+- `VITE_APP_ENV` — 环境标识：development / staging / production
+- `VITE_USE_MOCK=true` — Mock 模式（development 默认开启）
 - `VITE_MP_WEIXIN_APPID=` — 微信小程序 appid（`npm run sync:mp-appid` 同步）
 
+工具函数：`src/utils/env.js`（`getAppEnv`、`getApiBase`、`useMock` 等）
+
 路径别名：`@/` 指向 `src/`（已在 `vite.config.js` 配置）
+
+后续改造规划见 **[ROADMAP.md](./ROADMAP.md)**（工程化、请求层增强、UI 体验、多端专项、可选进阶）。
 
 ---
 

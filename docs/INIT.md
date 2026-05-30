@@ -1,6 +1,6 @@
 # 项目初始化与开发规范
 
-本文档用于新成员上手。日常功能开发流程见 [DEVELOPMENT.md](./DEVELOPMENT.md)。
+本文档用于新成员上手。日常功能开发流程见 [DEVELOPMENT.md](./DEVELOPMENT.md)，后续改造规划见 [ROADMAP.md](./ROADMAP.md)。
 
 ---
 
@@ -214,14 +214,23 @@ uniapp_Mudular/
 
 ### 6.5 接口与配置
 
-- 环境变量放 `.env.local`（不提交），示例：
+- 环境变量分档（已配置，见 `.env.example`）：
+
+| 文件 | 用途 |
+|---|---|
+| `.env.development` | 本地开发（`npm run dev:*`） |
+| `.env.staging` | 预发布构建（`npm run build:*:staging`） |
+| `.env.production` | 生产构建（`npm run build:*`） |
+| `.env.local` | 个人覆盖，**不提交 Git** |
 
 ```bash
-# .env.local
-VITE_API_BASE=https://api.example.com
+# .env.local 示例（覆盖开发环境 API）
+VITE_API_BASE=http://192.168.1.100:3000
+VITE_MP_WEIXIN_APPID=wx1234567890
 ```
 
-- 接口统一放 `src/api/`（创建后），不要在页面里散落 `uni.request`
+- 代码中读取：`src/utils/env.js`（`getApiBase()`、`useMock()`、`getAppEnv()`）
+- 接口统一放 `src/api/`，不要在页面里散落 `uni.request`
 
 ---
 

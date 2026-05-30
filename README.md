@@ -5,6 +5,7 @@
 > **文档索引**
 > - [docs/INIT.md](./docs/INIT.md) — 环境初始化、目录规范、编码约定
 > - [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md) — 后续功能开发流程
+> - [docs/ROADMAP.md](./docs/ROADMAP.md) — **后续改造方向**（工程化 / 请求层 / UI / 多端）
 > - [docs/CHANGELOG.md](./docs/CHANGELOG.md) — 版本变更记录
 
 ## 技术栈
@@ -16,10 +17,22 @@
 
 ## 环境配置
 
+项目按 **development / staging / production** 三档加载环境变量（Vite 标准）：
+
+| 环境 | 文件 | 命令示例 |
+|---|---|---|
+| 开发 | `.env.development` | `npm run dev:h5` |
+| 预发布 | `.env.staging` | `npm run build:h5:staging` |
+| 生产 | `.env.production` | `npm run build:h5` |
+
+个人本地覆盖（不提交 Git）：创建 `.env.local`
+
 ```bash
-cp .env.example .env.local
-# VITE_USE_MOCK=true  开发阶段使用 Mock 数据
-# VITE_API_BASE=       接入后端时填写接口地址
+# 查看变量说明
+cat .env.example
+
+# 本地覆盖示例（可选）
+# echo 'VITE_API_BASE=http://192.168.1.100:3000' >> .env.local
 ```
 
 ## 编译命令
