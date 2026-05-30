@@ -1,5 +1,6 @@
 import { getApiBase } from '../utils/env'
 import { TOKEN_KEY } from '../store/auth'
+import { handleSessionExpired } from '../utils/session'
 
 const DEFAULT_TIMEOUT = 15000
 
@@ -53,10 +54,7 @@ export function request(options = {}) {
         const { statusCode, data: body } = res
 
         if (statusCode === 401) {
-          uni.removeStorageSync(TOKEN_KEY)
-          if (showError) {
-            uni.showToast({ title: '登录已过期', icon: 'none' })
-          }
+          handleSessionExpired({ redirect: showError })
           reject(new Error('Unauthorized'))
           return
         }

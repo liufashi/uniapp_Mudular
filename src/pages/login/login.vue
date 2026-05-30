@@ -33,16 +33,24 @@
 </template>
 
 <script>
-import { useUserStore } from '../../store/index'
+import { useUserStore } from '@/store/index'
+
+const TAB_PAGES = ['/pages/index/index', '/pages/mine/mine']
 
 export default {
   data() {
     return {
       loading: false,
+      redirect: '',
       form: {
         account: 'demo',
         password: '123456'
       }
+    }
+  },
+  onLoad(options) {
+    if (options.redirect) {
+      this.redirect = decodeURIComponent(options.redirect)
     }
   },
   methods: {
@@ -61,44 +69,60 @@ export default {
         })
         uni.showToast({ title: '登录成功', icon: 'success' })
         setTimeout(() => {
-          uni.switchTab({ url: '/pages/mine/mine' })
+          this.navigateAfterLogin()
         }, 400)
       } catch (error) {
         console.error('login failed', error)
       } finally {
         this.loading = false
       }
+    },
+    navigateAfterLogin() {
+      if (!this.redirect) {
+        uni.switchTab({ url: '/pages/mine/mine' })
+        return
+      }
+
+      const path = this.redirect.split('?')[0]
+      if (TAB_PAGES.includes(path)) {
+        uni.switchTab({ url: path })
+        return
+      }
+
+      uni.redirectTo({ url: this.redirect })
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/styles/variables.scss';
+
 .container {
   min-height: 100vh;
-  padding: 80rpx 40rpx;
-  background: #f8f8f8;
+  padding: 80rpx $spacing-lg;
+  background: $bg-color;
   box-sizing: border-box;
 }
 
 .form-card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 48rpx 40rpx;
+  background: $card-bg;
+  border-radius: $border-radius-lg;
+  padding: 48rpx $spacing-lg;
 }
 
 .title {
   display: block;
   font-size: 44rpx;
   font-weight: bold;
-  color: #333;
+  color: $text-color;
   margin-bottom: 12rpx;
 }
 
 .subtitle {
   display: block;
-  font-size: 24rpx;
-  color: #999;
+  font-size: $font-size-sm;
+  color: $text-color-lighter;
   margin-bottom: 48rpx;
 }
 
@@ -109,7 +133,7 @@ export default {
 .label {
   display: block;
   font-size: 26rpx;
-  color: #666;
+  color: $text-color-light;
   margin-bottom: 12rpx;
 }
 
@@ -117,9 +141,9 @@ export default {
   height: 88rpx;
   padding: 0 24rpx;
   background: #f5f5f5;
-  border-radius: 16rpx;
-  font-size: 28rpx;
-  color: #333;
+  border-radius: $border-radius-md;
+  font-size: $font-size-md;
+  color: $text-color;
 }
 
 .placeholder {
@@ -127,12 +151,12 @@ export default {
 }
 
 .btn {
-  margin-top: 16rpx;
+  margin-top: $spacing-sm;
   height: 88rpx;
   line-height: 88rpx;
-  background: #007aff;
+  background: $primary-color;
   color: #fff;
-  border-radius: 44rpx;
+  border-radius: $border-radius-full;
   font-size: 30rpx;
 }
 </style>

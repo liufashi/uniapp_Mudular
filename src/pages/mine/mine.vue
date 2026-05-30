@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { useUserStore } from '../../store/index'
+import { useUserStore } from '@/store/index'
 
 export default {
   computed: {
@@ -34,9 +34,6 @@ export default {
       const name = this.displayName
       return name ? name.slice(0, 1) : '?'
     }
-  },
-  onShow() {
-    this.userStore.hydrate()
   },
   methods: {
     goLogin() {

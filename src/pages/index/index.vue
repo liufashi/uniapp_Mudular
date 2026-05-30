@@ -8,10 +8,12 @@
       <!-- #endif -->
     </view>
 
-    <view v-if="loading && !list.length" class="state">加载中...</view>
-    <view v-else-if="error && !list.length" class="state error" @tap="reload">
-      {{ error }}，点击重试
-    </view>
+    <EmptyState v-if="loading && !list.length" text="加载中..." />
+    <ErrorState
+      v-else-if="error && !list.length"
+      :message="error"
+      @retry="reload"
+    />
     <view v-else class="list">
       <view v-for="item in list" :key="item.id" class="card">
         <text class="card-title">{{ item.title }}</text>
@@ -30,20 +32,22 @@
 </template>
 
 <script>
-import { getHomeList } from '../../api/user'
-
-const PAGE_SIZE = 5
+import { getHomeList } from '@/api/user'
+import { usePagedList } from '@/composables/usePagedList'
+import EmptyState from '@/components/EmptyState.vue'
+import ErrorState from '@/components/ErrorState.vue'
 
 export default {
-  data() {
-    return {
-      list: [],
-      page: 1,
-      loading: false,
-      loadingMore: false,
-      finished: false,
-      error: ''
-    }
+  components: {
+    EmptyState,
+    ErrorState
+  },
+  setup() {
+    return usePagedList({
+      fetchFn: (page, pageSize) => getHomeList({ page, pageSize }),
+      pageSize: 5,
+      scrollRootSelector: '.page'
+    })
   },
   onLoad() {
     this.reload()
@@ -59,108 +63,17 @@ export default {
   },
   onReachBottom() {
     this.loadMore()
-  },
-  methods: {
-    async reload() {
-      this.page = 1
-      this.finished = false
-      this.error = ''
-      await this.fetchList({ reset: true })
-    },
-    async handleRefresh() {
-      if (this.loading || this.loadingMore) return
-      try {
-        await this.reload()
-        uni.showToast({ title: '已刷新', icon: 'none', duration: 1200 })
-      } finally {
-        uni.stopPullDownRefresh()
-      }
-    },
-    async loadMore() {
-      if (this.loading || this.loadingMore || this.finished) return
-      this.page += 1
-      await this.fetchList({ reset: false })
-    },
-    async fetchList({ reset }) {
-      if (reset) {
-        this.loading = true
-      } else {
-        this.loadingMore = true
-      }
-
-      try {
-        const data = await getHomeList({
-          page: this.page,
-          pageSize: PAGE_SIZE
-        })
-        const nextList = data.list || []
-        this.list = reset ? nextList : this.list.concat(nextList)
-        this.finished = data.hasMore === false || nextList.length === 0
-        if (reset) {
-          this.error = ''
-        }
-        await this.$nextTick()
-        this.tryFillScreen()
-        this.setupLoadObserver()
-      } catch (error) {
-        if (!reset) {
-          this.page -= 1
-        }
-        const message = error.message || '加载失败'
-        if (reset) {
-          this.error = message
-        } else {
-          uni.showToast({ title: message, icon: 'none' })
-        }
-      } finally {
-        this.loading = false
-        this.loadingMore = false
-      }
-    },
-    setupLoadObserver() {
-      if (this.finished || this.loading || this.loadingMore) return
-
-      this.teardownLoadObserver()
-      this._loadObserver = uni.createIntersectionObserver(this, {
-        observeAll: false
-      })
-      this._loadObserver
-        .relativeToViewport({ bottom: 80 })
-        .observe('.load-sentinel', (res) => {
-          if (res.intersectionRatio > 0) {
-            this.loadMore()
-          }
-        })
-    },
-    teardownLoadObserver() {
-      if (this._loadObserver) {
-        this._loadObserver.disconnect()
-        this._loadObserver = null
-      }
-    },
-    tryFillScreen() {
-      if (this.finished || this.loading || this.loadingMore) return
-
-      const query = uni.createSelectorQuery().in(this)
-      query.select('.page').boundingClientRect()
-      query.exec((res) => {
-        const pageRect = res[0]
-        if (!pageRect) return
-        const { windowHeight } = uni.getSystemInfoSync()
-        if (pageRect.height <= windowHeight + 20) {
-          this.loadMore()
-        }
-      })
-    }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/styles/variables.scss';
+
 .page {
   min-height: 100vh;
-  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
-  background: #f8f8f8;
+  padding-bottom: calc(#{$spacing-sm} + env(safe-area-inset-bottom));
+  background: $bg-color;
   box-sizing: border-box;
 }
 
@@ -173,45 +86,34 @@ export default {
   display: block;
   font-size: 40rpx;
   font-weight: bold;
-  color: #333;
+  color: $text-color;
   margin-bottom: 8rpx;
 }
 
 .subtitle {
   display: block;
-  font-size: 24rpx;
-  color: #999;
+  font-size: $font-size-sm;
+  color: $text-color-lighter;
 }
 
 .action-link {
   display: inline-block;
-  margin-top: 16rpx;
-  font-size: 24rpx;
-  color: #007aff;
-}
-
-.state {
-  text-align: center;
-  padding: 80rpx 0;
-  color: #999;
-  font-size: 28rpx;
-}
-
-.state.error {
-  color: #ff3b30;
+  margin-top: $spacing-sm;
+  font-size: $font-size-sm;
+  color: $primary-color;
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  gap: 20rpx;
+  gap: $spacing-sm;
   padding: 0 24rpx;
   box-sizing: border-box;
 }
 
 .card {
-  background: #fff;
-  border-radius: 20rpx;
+  background: $card-bg;
+  border-radius: $border-radius-lg;
   padding: 28rpx;
 }
 
@@ -219,14 +121,14 @@ export default {
   display: block;
   font-size: 30rpx;
   font-weight: bold;
-  color: #333;
+  color: $text-color;
   margin-bottom: 12rpx;
 }
 
 .card-desc {
   display: block;
   font-size: 26rpx;
-  color: #666;
+  color: $text-color-light;
   line-height: 1.6;
 }
 
@@ -236,12 +138,12 @@ export default {
 }
 
 .footer-text {
-  font-size: 24rpx;
-  color: #999;
+  font-size: $font-size-sm;
+  color: $text-color-lighter;
 }
 
 .footer-link {
-  color: #007aff;
+  color: $primary-color;
 }
 
 .load-sentinel {

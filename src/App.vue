@@ -1,19 +1,20 @@
 <script>
+import { useUserStore } from '@/store/index'
+import { registerLogoutHandler } from '@/utils/session'
+
 export default {
   onLaunch() {
-    console.log('App Launch')
-  },
-  onShow() {
-    console.log('App Show')
-  },
-  onHide() {
-    console.log('App Hide')
+    const userStore = useUserStore()
+    userStore.hydrate()
+    registerLogoutHandler(() => userStore.logout())
   }
 }
 </script>
 
-<style>
+<style lang="scss">
+@import '@/styles/variables.scss';
+
 page {
-  background-color: #f8f8f8;
+  background-color: $bg-color;
 }
 </style>

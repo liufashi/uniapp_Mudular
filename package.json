@@ -1,11 +1,11 @@
 {
   "name": "uniapp_Mudular",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "基于 uni-app 框架的多端开发项目",
   "main": "main.js",
   "scripts": {
-    "dev:mp-weixin": "uni -p mp-weixin",
-    "build:mp-weixin": "uni build -p mp-weixin",
+    "dev:mp-weixin": "node scripts/sync-mp-appid.js && uni -p mp-weixin",
+    "build:mp-weixin": "node scripts/sync-mp-appid.js && uni build -p mp-weixin",
     "dev:h5": "uni -p h5",
     "build:h5": "uni build -p h5",
     "dev:app": "uni -p app",
@@ -13,7 +13,9 @@
     "dev:app-android": "uni -p app-android",
     "build:app-android": "uni build -p app-android",
     "dev:app-ios": "uni -p app-ios",
-    "build:app-ios": "uni build -p app-ios"
+    "build:app-ios": "uni build -p app-ios",
+    "sync:mp-appid": "node scripts/sync-mp-appid.js",
+    "generate:tab-icons": "node scripts/generate-tab-icons.js"
   },
   "keywords": [
     "uni-app",

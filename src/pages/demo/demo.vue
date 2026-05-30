@@ -23,7 +23,8 @@
 </template>
 
 <script>
-import Header from '../../components/Header.vue'
+import Header from '@/components/Header.vue'
+import { guardCurrentPage } from '@/utils/auth'
 
 export default {
   components: { Header },
@@ -34,7 +35,7 @@ export default {
     console.log('Demo onLoad')
   },
   onShow() {
-    console.log('Demo onShow')
+    guardCurrentPage()
   },
   methods: {
     goBack() {

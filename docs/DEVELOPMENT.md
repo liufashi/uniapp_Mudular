@@ -12,19 +12,28 @@
 | **DEVELOPMENT.md**（本文） | 需求开发 → 测试 → 发布 的完整流程 |
 | [CHANGELOG.md](./CHANGELOG.md) | 版本变更记录 |
 
-### 当前已实现（v1.1.0）
+### 当前已实现（v1.2.0）
 
 | 模块 | 路径 | 说明 |
 |---|---|---|
 | 网络请求 | `src/api/request.js` | `uni.request` 封装，Token / 401 / 错误提示 |
-| 用户接口 | `src/api/user.js` | `login`、`getHomeList`（Mock 可切换） |
-| 用户状态 | `src/store/` | Pinia，`useUserStore` |
-| 首页列表 | `pages/index/` | Mock 列表，下拉刷新 |
-| 登录 | `pages/login/` | Mock 账号 `demo` / `123456` |
+| 会话管理 | `src/utils/session.js` | 401 清登录态并跳转登录页 |
+| 登录拦截 | `src/utils/auth.js` | 需登录页面校验（演示页示例） |
+| 用户接口 | `src/api/user.js` | `login`、`getHomeList`（Mock 分页） |
+| 用户状态 | `src/store/` | Pinia，`App.vue` 启动时 hydrate |
+| 分页列表 | `src/composables/usePagedList.js` | 下拉刷新 / 上拉加载复用 |
+| 首页列表 | `pages/index/` | Mock 分页列表 |
+| 登录 | `pages/login/` | Mock 账号 `demo` / `123456`，支持 redirect |
 | 我的 | `pages/mine/` | 登录态展示、退出 |
 | tabBar | `pages.json` | 首页 / 我的 |
+| 公共组件 | `src/components/` | EmptyState、ErrorState、Header |
+| 设计变量 | `src/styles/variables.scss` | 颜色 / 间距 / 圆角 |
 
-环境变量：复制 `.env.example` → `.env.local`，`VITE_USE_MOCK=true` 为开发 Mock 模式。
+环境变量：复制 `.env.example` → `.env.local`
+- `VITE_USE_MOCK=true` — Mock 模式
+- `VITE_MP_WEIXIN_APPID=` — 微信小程序 appid（`npm run sync:mp-appid` 同步）
+
+路径别名：`@/` 指向 `src/`（已在 `vite.config.js` 配置）
 
 ---
 

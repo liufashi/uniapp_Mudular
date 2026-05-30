@@ -74,11 +74,12 @@ uniapp_Mudular/
 └── package.json
 ```
 
-## 当前功能（v1.1.0）
+## 当前功能（v1.2.0）
 
-- 首页内容列表（Mock 数据，支持下拉刷新）
+- 首页分页列表（Mock，下拉刷新 + 上拉加载）
 - 登录 / 我的（Pinia 状态，Mock 登录：`demo` / `123456`）
-- tabBar：首页、我的
+- 登录拦截 + 401 自动跳转登录
+- tabBar：首页、我的（81×81 图标，可 `npm run generate:tab-icons` 重新生成）
 
 ## 多端差异处理
 
