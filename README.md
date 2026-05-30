@@ -2,6 +2,11 @@
 
 基于 uni-app 框架的多端开发项目，支持 iOS、Android、微信小程序、H5 等平台。
 
+> **文档索引**
+> - [docs/INIT.md](./docs/INIT.md) — 环境初始化、目录规范、编码约定
+> - [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md) — 后续功能开发流程
+> - [docs/CHANGELOG.md](./docs/CHANGELOG.md) — 版本变更记录
+
 ## 技术栈
 
 - uni-app (Vue 3 + Vite)
@@ -39,17 +44,18 @@ npm run build:app-ios
 
 ```
 uniapp_Mudular/
+├── docs/                   # 项目文档（INIT.md 开发规范）
+├── scripts/                # 工具脚本
 ├── src/
 │   ├── pages/              # 页面目录
-│   │   ├── index/          # 首页
-│   │   └── demo/           # 演示页
 │   ├── components/         # 公共组件
 │   ├── styles/             # 全局样式
-│   ├── App.vue            # 应用入口
-│   ├── main.js            # 主入口
-│   ├── manifest.json      # 应用配置（多端差异）
-│   └── pages.json         # 路由配置
-├── index.html             # H5 入口
+│   ├── App.vue
+│   ├── main.js
+│   ├── manifest.json
+│   └── pages.json
+├── .hbuilderx/             # HBuilderX 运行配置
+├── index.html
 ├── vite.config.js
 └── package.json
 ```
