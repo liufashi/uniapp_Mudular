@@ -12,6 +12,20 @@
 | **DEVELOPMENT.md**（本文） | 需求开发 → 测试 → 发布 的完整流程 |
 | [CHANGELOG.md](./CHANGELOG.md) | 版本变更记录 |
 
+### 当前已实现（v1.1.0）
+
+| 模块 | 路径 | 说明 |
+|---|---|---|
+| 网络请求 | `src/api/request.js` | `uni.request` 封装，Token / 401 / 错误提示 |
+| 用户接口 | `src/api/user.js` | `login`、`getHomeList`（Mock 可切换） |
+| 用户状态 | `src/store/` | Pinia，`useUserStore` |
+| 首页列表 | `pages/index/` | Mock 列表，下拉刷新 |
+| 登录 | `pages/login/` | Mock 账号 `demo` / `123456` |
+| 我的 | `pages/mine/` | 登录态展示、退出 |
+| tabBar | `pages.json` | 首页 / 我的 |
+
+环境变量：复制 `.env.example` → `.env.local`，`VITE_USE_MOCK=true` 为开发 Mock 模式。
+
 ---
 
 ## 2. 总体流程

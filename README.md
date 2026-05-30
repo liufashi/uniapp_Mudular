@@ -11,7 +11,16 @@
 
 - uni-app (Vue 3 + Vite)
 - Vue.js 3
+- Pinia
 - SCSS
+
+## 环境配置
+
+```bash
+cp .env.example .env.local
+# VITE_USE_MOCK=true  开发阶段使用 Mock 数据
+# VITE_API_BASE=       接入后端时填写接口地址
+```
 
 ## 编译命令
 
@@ -44,21 +53,32 @@ npm run build:app-ios
 
 ```
 uniapp_Mudular/
-├── docs/                   # 项目文档（INIT.md 开发规范）
+├── docs/                   # 项目文档
 ├── scripts/                # 工具脚本
 ├── src/
-│   ├── pages/              # 页面目录
+│   ├── api/                # 接口封装（request.js、user.js）
+│   ├── store/              # Pinia 状态（用户登录）
+│   ├── utils/              # 工具函数（env 等）
+│   ├── pages/              # 页面（index、mine、login、demo）
 │   ├── components/         # 公共组件
+│   ├── static/             # 静态资源（tabBar 图标等）
 │   ├── styles/             # 全局样式
 │   ├── App.vue
 │   ├── main.js
 │   ├── manifest.json
-│   └── pages.json
+│   └── pages.json          # 路由 + tabBar
+├── .env.example            # 环境变量模板
 ├── .hbuilderx/             # HBuilderX 运行配置
 ├── index.html
 ├── vite.config.js
 └── package.json
 ```
+
+## 当前功能（v1.1.0）
+
+- 首页内容列表（Mock 数据，支持下拉刷新）
+- 登录 / 我的（Pinia 状态，Mock 登录：`demo` / `123456`）
+- tabBar：首页、我的
 
 ## 多端差异处理
 

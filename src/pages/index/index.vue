@@ -1,46 +1,54 @@
 <template>
   <view class="container">
-    <Header title="首页" />
-    <view class="content">
-      <text class="title">Hello uniapp</text>
-      <text class="subtitle">欢迎使用 uniapp 多端开发框架</text>
+    <view class="hero">
+      <text class="title">首页列表</text>
+      <text class="subtitle">首个业务模块：内容列表（Mock 数据）</text>
+    </view>
 
-      <view class="platform-tags">
-        <!-- #ifdef APP-PLUS -->
-        <text class="tag app">App 端</text>
-        <!-- #endif -->
-        <!-- #ifdef MP-WEIXIN -->
-        <text class="tag weixin">微信小程序</text>
-        <!-- #endif -->
-        <!-- #ifdef H5 -->
-        <text class="tag h5">H5 端</text>
-        <!-- #endif -->
+    <view v-if="loading" class="state">加载中...</view>
+    <view v-else-if="error" class="state error" @tap="fetchList">
+      {{ error }}，点击重试
+    </view>
+    <view v-else class="list">
+      <view v-for="item in list" :key="item.id" class="card">
+        <text class="card-title">{{ item.title }}</text>
+        <text class="card-desc">{{ item.desc }}</text>
       </view>
-
-      <button @tap="goToDemo" class="btn">跳转演示页</button>
     </view>
   </view>
 </template>
 
 <script>
-import Header from '../../components/Header.vue'
+import { getHomeList } from '../../api/user'
 
 export default {
-  components: { Header },
   data() {
-    return {}
+    return {
+      loading: false,
+      error: '',
+      list: []
+    }
   },
   onLoad() {
-    console.log('Index onLoad')
+    this.fetchList()
   },
-  onShow() {
-    console.log('Index onShow')
+  onPullDownRefresh() {
+    this.fetchList().finally(() => {
+      uni.stopPullDownRefresh()
+    })
   },
   methods: {
-    goToDemo() {
-      uni.navigateTo({
-        url: '/pages/demo/demo'
-      })
+    async fetchList() {
+      this.loading = true
+      this.error = ''
+      try {
+        const data = await getHomeList()
+        this.list = data.list || []
+      } catch (error) {
+        this.error = error.message || '加载失败'
+      } finally {
+        this.loading = false
+      }
     }
   }
 }
@@ -50,54 +58,63 @@ export default {
 .container {
   min-height: 100vh;
   background: #f8f8f8;
+  padding: 24rpx;
+  box-sizing: border-box;
 }
-.content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 100rpx;
+
+.hero {
+  margin-bottom: 24rpx;
 }
+
 .title {
-  font-size: 48rpx;
+  display: block;
+  font-size: 40rpx;
   font-weight: bold;
   color: #333;
-  margin-bottom: 30rpx;
+  margin-bottom: 8rpx;
 }
+
 .subtitle {
-  font-size: 28rpx;
-  color: #666;
-  margin-bottom: 60rpx;
-}
-.platform-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20rpx;
-  margin-bottom: 60rpx;
-}
-.tag {
-  padding: 10rpx 30rpx;
-  border-radius: 20rpx;
+  display: block;
   font-size: 24rpx;
+  color: #999;
 }
-.tag.app {
-  background: #007AFF;
-  color: #fff;
-}
-.tag.weixin {
-  background: #07C160;
-  color: #fff;
-}
-.tag.h5 {
-  background: #FF9500;
-  color: #fff;
-}
-.btn {
-  width: 300rpx;
-  height: 80rpx;
-  line-height: 80rpx;
-  background: #007AFF;
-  color: #fff;
-  border-radius: 40rpx;
+
+.state {
+  text-align: center;
+  padding: 80rpx 0;
+  color: #999;
   font-size: 28rpx;
+}
+
+.state.error {
+  color: #ff3b30;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 28rpx;
+}
+
+.card-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.card-desc {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
 }
 </style>
