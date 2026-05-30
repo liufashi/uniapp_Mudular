@@ -1,5 +1,6 @@
 import request from './request'
-import { useMock } from '../utils/env'
+import upload from './upload'
+import { useMockModule } from '@/utils/env'
 
 const PAGE_SIZE = 5
 const MOCK_TOTAL = 15
@@ -39,7 +40,7 @@ function buildMockList(page, pageSize) {
 }
 
 export function login(data) {
-  if (useMock()) {
+  if (useMockModule('user')) {
     return mockDelay({
       token: 'mock-token-' + Date.now(),
       userInfo: {
@@ -54,7 +55,9 @@ export function login(data) {
     url: '/auth/login',
     method: 'POST',
     data,
-    auth: false
+    auth: false,
+    showLoading: true,
+    loadingText: '登录中...'
   })
 }
 
@@ -62,19 +65,20 @@ export function getHomeList(params = {}) {
   const page = Number(params.page) || 1
   const pageSize = Number(params.pageSize) || PAGE_SIZE
 
-  if (useMock()) {
+  if (useMockModule('home')) {
     return mockDelay(buildMockList(page, pageSize))
   }
 
   return request({
     url: '/home/list',
     method: 'GET',
-    data: { page, pageSize, ...params }
+    data: { page, pageSize, ...params },
+    dedupe: true
   })
 }
 
 export function getUserProfile() {
-  if (useMock()) {
+  if (useMockModule('user')) {
     return mockDelay({
       id: 1,
       nickname: '演示用户',
@@ -84,6 +88,19 @@ export function getUserProfile() {
 
   return request({
     url: '/user/profile',
-    method: 'GET'
+    method: 'GET',
+    showLoading: true
+  })
+}
+
+export function uploadAvatar(filePath) {
+  if (useMockModule('user')) {
+    return mockDelay({ url: filePath || '/static/mock-avatar.png' })
+  }
+
+  return upload({
+    url: '/user/avatar',
+    filePath,
+    name: 'avatar'
   })
 }

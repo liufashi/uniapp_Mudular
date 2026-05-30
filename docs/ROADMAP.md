@@ -54,21 +54,21 @@
 
 ```
 src/api/
-├── request.js       # 已有：uni.request 封装
-├── interceptors.js  # 待做：请求/响应拦截（可选）
-├── upload.js        # 待做：uni.uploadFile 封装
-├── user.js          # 已有
-└── index.js         # 已有：统一导出
+├── request.js       # uni.request 封装（loading / dedupe / abort）
+├── interceptors.js  # 请求/响应拦截
+├── upload.js        # uni.uploadFile 封装
+├── user.js
+└── index.js         # 统一导出
 ```
 
 | 项 | 状态 | 说明 |
 |---|---|---|
-| 请求 loading | ⬜ | `showLoading` 参数，防重复点击 |
-| 请求取消 / 防重复 | ⬜ | 列表页快速切换时，避免旧请求覆盖新数据 |
-| 上传封装 | ⬜ | `uni.uploadFile` 统一封装（头像、图片业务几乎必用） |
-| 错误码映射 | ⬜ | `src/constants/errorCode.js`，后端 `code` → 用户可读文案 |
-| Mock 开关细化 | ⬜ | 按模块 Mock（如只 Mock 用户，列表走真实接口） |
-| 拦截器拆分 | ⬜ | 将 Token 注入、401、错误提示等从 `request.js` 拆到 `interceptors.js` |
+| 请求 loading | ✅ | `showLoading` / `loadingText` 参数 |
+| 请求取消 / 防重复 | ✅ | `dedupe`、`requestKey`、`abortRequest()` |
+| 上传封装 | ✅ | `src/api/upload.js`（`uploadAvatar` 示例） |
+| 错误码映射 | ✅ | `src/constants/errorCode.js` |
+| Mock 开关细化 | ✅ | `useMockModule('user'|'home')` + `VITE_MOCK_*` |
+| 拦截器拆分 | ✅ | `src/api/interceptors.js` |
 
 **Mock 细化 env 示例：**
 
@@ -139,7 +139,7 @@ npm run build:mp-weixin
 | 版本 | 主题 | 主要项 |
 |---|---|---|
 | **v1.3.0** | 工程化 | ESLint/Prettier、~~环境分档~~、Git hooks、CI |
-| **v1.4.0** | 请求层 | loading、上传、错误码、Mock 细化、拦截器 |
+| **v1.4.0** | ~~请求层~~ | loading、上传、错误码、Mock 细化、拦截器 |
 | **v1.5.0** | 体验 | 安全区、骨架屏、（可选）uni-ui |
 | **v2.0.0** | 平台专项 | 小程序隐私/分享、App 启动更新、分包 |
 

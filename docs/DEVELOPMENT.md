@@ -17,7 +17,10 @@
 
 | 模块 | 路径 | 说明 |
 |---|---|---|
-| 网络请求 | `src/api/request.js` | `uni.request` 封装，Token / 401 / 错误提示 |
+| 网络请求 | `src/api/request.js` | `uni.request` 封装，loading / dedupe / abort |
+| 请求拦截 | `src/api/interceptors.js` | Token 注入、401、错误提示、响应解析 |
+| 文件上传 | `src/api/upload.js` | `uni.uploadFile` 封装 |
+| 错误码 | `src/constants/errorCode.js` | 后端 code → 用户可读文案 |
 | 会话管理 | `src/utils/session.js` | 401 清登录态并跳转登录页 |
 | 登录拦截 | `src/utils/auth.js` | 需登录页面校验（演示页示例） |
 | 用户接口 | `src/api/user.js` | `login`、`getHomeList`（Mock 分页） |
@@ -40,7 +43,8 @@
 | `.env.local` | 个人本地覆盖（不提交） | 始终（优先级最高） |
 
 - `VITE_APP_ENV` — 环境标识：development / staging / production
-- `VITE_USE_MOCK=true` — Mock 模式（development 默认开启）
+- `VITE_USE_MOCK=true` — 全局 Mock 模式（development 默认开启）
+- `VITE_MOCK_USER` / `VITE_MOCK_HOME` — 按模块 Mock（可选，覆盖全局）
 - `VITE_MP_WEIXIN_APPID=` — 微信小程序 appid（`npm run sync:mp-appid` 同步）
 
 工具函数：`src/utils/env.js`（`getAppEnv`、`getApiBase`、`useMock` 等）
@@ -121,13 +125,19 @@ src/pages/about/about.vue   # 创建页面
 
 ```
 src/api/
-├── index.js        # 统一导出
-├── request.js      # 封装 uni.request
-└── user.js         # 用户相关接口
+├── index.js         # 统一导出
+├── request.js       # uni.request 封装（showLoading / dedupe）
+├── interceptors.js  # 请求/响应拦截
+├── upload.js        # uni.uploadFile 封装
+├── user.js          # 用户相关接口
+└── ...
+src/constants/
+└── errorCode.js     # 后端错误码映射
 ```
 
-- [ ] 基础 URL 从环境变量读取（`import.meta.env.VITE_API_BASE`）
-- [ ] 统一错误处理（登录过期、网络异常）
+- [ ] 基础 URL 从 `getApiBase()` 读取
+- [ ] 统一错误处理（401、业务错误码、网络异常）
+- [ ] 列表接口建议开启 `dedupe: true` 防重复请求
 - [ ] 不在页面里直接写裸 `uni.request`
 
 ### 4.4 涉及多端差异

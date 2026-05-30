@@ -1,25 +1,26 @@
-import { getApiBase } from '../utils/env'
-import { TOKEN_KEY } from '../store/auth'
-import { handleSessionExpired } from '../utils/session'
+import {
+  applyRequestInterceptor,
+  buildRequestKey,
+  createLoadingGuard,
+  handleHttpStatus,
+  normalizeResponseBody,
+  showErrorToast
+} from './interceptors'
 
 const DEFAULT_TIMEOUT = 15000
+const pendingTasks = new Map()
 
-function joinUrl(base, path) {
-  if (!base) return path
-  if (/^https?:\/\//.test(path)) return path
-  const normalizedBase = base.replace(/\/$/, '')
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`
-  return `${normalizedBase}${normalizedPath}`
+export function abortRequest(requestKey) {
+  const task = pendingTasks.get(requestKey)
+  if (task) {
+    task.abort()
+    pendingTasks.delete(requestKey)
+  }
 }
 
-function normalizeResponse(payload) {
-  if (payload && typeof payload === 'object' && 'code' in payload) {
-    if (payload.code === 0 || payload.code === 200) {
-      return payload.data
-    }
-    throw new Error(payload.message || payload.msg || '请求失败')
-  }
-  return payload
+export function abortAllRequests() {
+  pendingTasks.forEach((task) => task.abort())
+  pendingTasks.clear()
 }
 
 export function request(options = {}) {
@@ -30,49 +31,52 @@ export function request(options = {}) {
     header = {},
     timeout = DEFAULT_TIMEOUT,
     showError = true,
-    auth = true
+    showLoading = false,
+    loadingText = '加载中...',
+    auth = true,
+    dedupe = false,
+    requestKey: customRequestKey
   } = options
 
+  if (!url) {
+    return Promise.reject(new Error('request url is required'))
+  }
+
+  const config = applyRequestInterceptor({
+    url,
+    method,
+    data,
+    header,
+    timeout,
+    showError,
+    showLoading,
+    loadingText,
+    auth
+  })
+
+  const requestKey = customRequestKey || (dedupe ? buildRequestKey(config) : '')
+
+  if (requestKey && pendingTasks.has(requestKey)) {
+    pendingTasks.get(requestKey).abort()
+    pendingTasks.delete(requestKey)
+  }
+
   return new Promise((resolve, reject) => {
-    const token = uni.getStorageSync(TOKEN_KEY)
-    const finalHeader = {
-      'Content-Type': 'application/json',
-      ...header
-    }
+    const hideLoading = showLoading ? createLoadingGuard(loadingText) : () => {}
 
-    if (auth && token) {
-      finalHeader.Authorization = `Bearer ${token}`
-    }
-
-    uni.request({
-      url: joinUrl(getApiBase(), url),
-      method,
-      data,
-      header: finalHeader,
-      timeout,
+    const task = uni.request({
+      url: config.url,
+      method: config.method,
+      data: config.data,
+      header: config.header,
+      timeout: config.timeout,
       success: (res) => {
-        const { statusCode, data: body } = res
-
-        if (statusCode === 401) {
-          handleSessionExpired({ redirect: showError })
-          reject(new Error('Unauthorized'))
-          return
-        }
-
-        if (statusCode < 200 || statusCode >= 300) {
-          const message = body?.message || body?.msg || `HTTP ${statusCode}`
-          if (showError) {
-            uni.showToast({ title: message, icon: 'none' })
-          }
-          reject(new Error(message))
-          return
-        }
-
         try {
-          resolve(normalizeResponse(body))
+          handleHttpStatus(res.statusCode, res.data, config)
+          resolve(normalizeResponseBody(res.data))
         } catch (error) {
           if (showError) {
-            uni.showToast({ title: error.message, icon: 'none' })
+            showErrorToast(error.message)
           }
           reject(error)
         }
@@ -80,11 +84,21 @@ export function request(options = {}) {
       fail: (error) => {
         const message = error.errMsg || '网络异常，请稍后重试'
         if (showError) {
-          uni.showToast({ title: message, icon: 'none' })
+          showErrorToast(message)
         }
         reject(new Error(message))
+      },
+      complete: () => {
+        hideLoading()
+        if (requestKey) {
+          pendingTasks.delete(requestKey)
+        }
       }
     })
+
+    if (requestKey) {
+      pendingTasks.set(requestKey, task)
+    }
   })
 }
 
