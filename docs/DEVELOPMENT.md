@@ -11,6 +11,7 @@
 | [INIT.md](./INIT.md) | 环境初始化、目录规范、编码约定 |
 | **DEVELOPMENT.md**（本文） | 需求开发 → 测试 → 发布 的完整流程 |
 | [ROADMAP.md](./ROADMAP.md) | **后续改造方向**（工程化、请求层、UI、多端专项） |
+| [PACKAGING.md](./PACKAGING.md) | **App 打包**（APK / IPA 云打包） |
 | [CHANGELOG.md](./CHANGELOG.md) | 版本变更记录 |
 
 ### 当前已实现（v1.2.0）
@@ -279,14 +280,17 @@ npm run build:mp-weixin
 
 ### 8.3 App（iOS / Android）
 
+详细步骤见 **[PACKAGING.md](./PACKAGING.md)**（APK / IPA 云打包、证书、真机基座调试）。
+
 ```bash
 npm run build:app
-# 产物：dist/build/app/
+# 产物：dist/build/app/（资源，非安装包）
 ```
 
-1. HBuilderX 导入 `dist/build/app` 或使用云打包
-2. 配置证书、签名
-3. 提交 App Store / 应用市场上架
+1. CLI 编译发行资源：`npm run build:app`
+2. HBuilderX 打开项目根目录 → **发行 → 原生 App - 云打包**
+3. Android：可选 DCloud 公用证书快速出测试 APK
+4. iOS：需 Apple 证书 + 描述文件，或使用真机基座调试（见 PACKAGING.md §6）
 
 ---
 

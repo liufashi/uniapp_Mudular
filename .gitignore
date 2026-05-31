@@ -5,3 +5,7 @@ unpackage/
 .DS_Store
 .env.local
 .env.*.local
+*.keystore
+*.jks
+*.p12
+*.mobileprovision

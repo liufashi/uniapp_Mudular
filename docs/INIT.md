@@ -1,6 +1,6 @@
 # 项目初始化与开发规范
 
-本文档用于新成员上手。日常功能开发流程见 [DEVELOPMENT.md](./DEVELOPMENT.md)，后续改造规划见 [ROADMAP.md](./ROADMAP.md)。
+本文档用于新成员上手。日常功能开发流程见 [DEVELOPMENT.md](./DEVELOPMENT.md)，App 打包见 [PACKAGING.md](./PACKAGING.md)，后续改造规划见 [ROADMAP.md](./ROADMAP.md)。
 
 ---
 

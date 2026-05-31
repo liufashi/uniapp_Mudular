@@ -16,6 +16,12 @@
 
 ### 文档
 - 新增 [ROADMAP.md](./ROADMAP.md)，整理 v1.2.0 后续改造方向（工程化、请求层、UI、多端专项、可选进阶）
+- 新增 [PACKAGING.md](./PACKAGING.md)，App 云打包（APK / IPA）完整指南
+
+### 配置
+- `manifest.json` 补充 Android `packagename`、iOS `bundleid`
+- DCloud AppID 配置为 `__UNI__82166B3`（云打包）
+- 微信小程序 AppID 已配置（`wx3df8fe4fe3029c86`）
 
 ---
 

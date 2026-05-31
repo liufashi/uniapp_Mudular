@@ -6,6 +6,7 @@
 > - [docs/INIT.md](./docs/INIT.md) — 环境初始化、目录规范、编码约定
 > - [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md) — 后续功能开发流程
 > - [docs/ROADMAP.md](./docs/ROADMAP.md) — **后续改造方向**（工程化 / 请求层 / UI / 多端）
+> - [docs/PACKAGING.md](./docs/PACKAGING.md) — **App 打包**（APK / IPA 云打包）
 > - [docs/CHANGELOG.md](./docs/CHANGELOG.md) — 版本变更记录
 
 ## 技术栈
